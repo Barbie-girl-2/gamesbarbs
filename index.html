@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff7fb">
+<title>Joguinhos das Girls</title>
+<style>
+:root{
+  --pink:#ef4f9b;
+  --pink-dark:#d93f88;
+  --pink-soft:#fff0f7;
+  --blue:#77bde7;
+  --text:#70485d;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:#fff9fc}
+body{
+  background:
+    radial-gradient(circle at 12% 5%,#ffe3f1 0 8%,transparent 25%),
+    radial-gradient(circle at 90% 18%,#e9f7ff 0 7%,transparent 22%),
+    #fff9fc;
+}
+.wrap{width:min(980px,92%);margin:auto;padding:42px 0 60px}
+header{text-align:center;margin-bottom:34px}
+.badge{
+  display:inline-block;background:white;border:1px solid #f5d7e6;border-radius:999px;
+  padding:8px 14px;font-size:12px;font-weight:800;letter-spacing:.7px;color:var(--pink);
+  box-shadow:0 5px 18px rgba(203,73,137,.08)
+}
+h1{margin:14px 0 7px;font-size:clamp(32px,6vw,56px);line-height:1;color:#de438d;letter-spacing:-2px}
+header p{margin:0;color:#956d81;font-size:15px}
+.games{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.card{
+  overflow:hidden;background:#fff;border:1px solid #f4dbe7;border-radius:24px;
+  box-shadow:0 12px 35px rgba(153,72,112,.10);transition:.2s;
+}
+.card:hover{transform:translateY(-4px);box-shadow:0 16px 38px rgba(153,72,112,.15)}
+.cover{
+  aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative;
+  background:linear-gradient(145deg,#ffd4e8,#f5a9cf);
+}
+.cover.krissy{background:url("assets/imagem-01.webp") center/contain no-repeat;background-color:#ff0090}
+.game-cover{background-position:center;background-size:cover;background-repeat:no-repeat;background-color:#f7d8e9}
+.cover.placeholder{background:linear-gradient(145deg,#eaf7ff,#cdeafa)}
+.cover.placeholder:before{content:"🎀";font-size:70px;opacity:.75}
+.cover span{
+  position:absolute;left:13px;top:13px;background:rgba(255,255,255,.9);
+  color:#e44891;border-radius:999px;padding:6px 10px;font-size:10px;font-weight:900
+}
+.info{padding:16px}
+.info h2{font-size:17px;margin:0 0 5px;color:#71475d}
+.info p{font-size:12px;line-height:1.45;margin:0 0 14px;color:#a07b8e}
+.play{
+  width:100%;border:0;border-radius:999px;padding:12px 16px;background:var(--pink);
+  color:#fff;font-weight:900;cursor:pointer;font-size:13px;box-shadow:0 5px 0 var(--pink-dark)
+}
+.play:active{transform:translateY(3px);box-shadow:0 2px 0 var(--pink-dark)}
+.soon .play{background:#f4e7ed;color:#ad899b;box-shadow:none;cursor:default}
+footer{text-align:center;margin-top:30px;font-size:11px;color:#b18b9e}
+
+/* MODAL */
+.modal{position:fixed;inset:0;background:rgba(70,38,55,.72);z-index:50;display:none;align-items:center;justify-content:center;padding:18px}
+.modal.open{display:flex}
+.panel{
+  width:min(1080px,100%);background:#fff;border-radius:22px;overflow:hidden;
+  box-shadow:0 25px 80px rgba(0,0,0,.3)
+}
+.panel-top{height:58px;display:flex;align-items:center;padding:0 17px;border-bottom:1px solid #f2dce7;gap:10px}
+.panel-title{font-weight:900;color:#d94189;flex:1}
+.icon-btn{border:0;background:#fff0f7;color:#d94189;border-radius:50%;width:36px;height:36px;font-size:18px;cursor:pointer}
+.player-wrap{background:#171717;width:100%;aspect-ratio:4/3;max-height:calc(100vh - 115px)}
+.player-wrap iframe{width:100%;height:100%;border:0;display:block}
+@media(max-width:760px){
+  .wrap{width:94%;padding-top:28px}
+  .games{grid-template-columns:repeat(2,1fr);gap:11px}
+  .card{border-radius:18px}
+  .info{padding:12px}
+  .info h2{font-size:14px}
+  .info p{display:none}
+  .cover.placeholder:before{font-size:52px}
+  .play{padding:10px;font-size:12px}
+  .modal{padding:0}
+  .panel{height:100dvh;width:100%;border-radius:0;display:flex;flex-direction:column}
+  .panel-top{height:54px;flex:0 0 54px}
+  .player-wrap{flex:1;aspect-ratio:auto;max-height:none;display:flex;align-items:center}
+  .player-wrap iframe{height:100%;min-height:0}
+}
+
+.player-area{background:#171717}
+.mobile-game-help{display:none}
+@media(max-width:760px){
+  .modal{padding:0;background:#111}
+  .panel{width:100%;height:100dvh;max-height:100dvh;border-radius:0;display:flex;flex-direction:column;overflow:hidden}
+  .panel-top{height:54px;min-height:54px;flex:0 0 54px}
+  .player-area{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;justify-content:center;background:#111}
+  .player-wrap{width:100%;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:560/384!important;flex:none!important;position:relative;background:#000}
+  .player-wrap iframe{position:absolute;inset:0;width:100%;height:100%;min-height:0!important;border:0;touch-action:auto}
+  .mobile-game-help{display:flex;flex-direction:column;gap:9px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:#fff;color:#80566a;text-align:center;font-size:11px;line-height:1.35}
+  .mobile-game-help button{border:0;border-radius:999px;padding:10px 12px;background:#ef4f9b;color:#fff;font-size:11px;font-weight:900}
+}
+@media(max-width:900px) and (orientation:landscape){
+  .panel-top{height:44px;min-height:44px;flex-basis:44px}
+  .player-area{overflow:hidden}
+  .player-wrap{height:calc(100dvh - 44px)!important;width:auto;max-width:100%;aspect-ratio:560/384!important;margin:auto}
+  .mobile-game-help{display:none}
+}
+
+
+/* Archive.org/Ruffle: viewport follows the official 560x384 embed size */
+.panel.archive-player{
+  width:min(608px, calc(100vw - 28px));
+  height:auto;
+}
+.panel.archive-player .player-area{
+  background:transparent;
+  padding:0;
+  overflow:hidden;
+}
+.panel.archive-player .player-wrap{
+  width:100%;
+  height:auto !important;
+  aspect-ratio:560/384 !important;
+  max-height:none !important;
+  background:#000;
+  margin:0 auto;
+}
+.panel.archive-player .player-wrap iframe{
+  width:100%;
+  height:100%;
+  display:block;
+  border:0;
+}
+@media(max-width:760px){
+  .modal:has(.panel.archive-player){
+    padding:8px;
+    align-items:center;
+  }
+  .panel.archive-player{
+    width:100%;
+    height:auto;
+    max-height:calc(100dvh - 16px);
+    border-radius:18px;
+    overflow:auto;
+  }
+  .panel.archive-player .panel-top{
+    height:50px;
+    min-height:50px;
+    flex-basis:50px;
+  }
+  .panel.archive-player .player-area{
+    flex:none;
+    overflow:visible;
+  }
+  .panel.archive-player .player-wrap{
+    width:100%;
+    height:auto !important;
+    aspect-ratio:560/384 !important;
+  }
+}
+@media(max-width:900px) and (orientation:landscape){
+  .panel.archive-player{
+    width:min(560px, calc((100dvh - 60px) * 560 / 384), calc(100vw - 16px));
+    max-height:calc(100dvh - 8px);
+  }
+  .panel.archive-player .panel-top{
+    height:44px;
+    min-height:44px;
+    flex-basis:44px;
+  }
+  .panel.archive-player .player-wrap{
+    height:auto !important;
+    width:100%;
+    aspect-ratio:560/384 !important;
+  }
+  .panel.archive-player .mobile-game-help{display:none}
+}
+
+
+.cover.game-cover > span{display:none!important}
+@media(max-width:900px) and (min-width:641px){
+  .grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(min-width:901px){
+  .grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+
+/* DEFINITIVE CARD GRID */
+main .games,
+main .grid,
+.games,
+.grid{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:18px !important;
+}
+@media(max-width:640px){
+  main .games,
+  main .grid,
+  .games,
+  .grid{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:10px !important;
+  }
+}
+
+
+.barbie-games-logo{
+  display:block;
+  width:min(620px,82vw);
+  height:auto;
+  margin:8px auto 10px;
+  object-fit:contain;
+}
+@media(max-width:640px){
+  .barbie-games-logo{width:min(390px,90vw);margin:5px auto 8px}
+}
+
+
+/* ===== BARRA SUPERIOR CINEMA DA BARBIE ===== */
+.girls-topbar{
+  position:sticky;top:0;z-index:1000;
+  width:100%;height:78px;padding:10px clamp(16px,3vw,38px);
+  display:grid;grid-template-columns:minmax(170px,260px) minmax(220px,560px) auto;
+  align-items:center;gap:26px;
+  background:rgba(255,255,255,.96);
+  border-bottom:1px solid #f3dbe7;
+  box-shadow:0 5px 22px rgba(157,65,110,.07);
+  backdrop-filter:blur(12px);
+}
+.girls-brand{display:flex;align-items:center;min-width:0}
+.girls-brand img{display:block;width:min(100%,245px);height:54px;object-fit:contain;object-position:left center}
+.girls-search{
+  width:100%;height:44px;display:flex;align-items:center;gap:10px;
+  padding:0 15px;background:#fff7fb;border:1px solid #f1d4e2;border-radius:999px;
+  transition:.2s;
+}
+.girls-search:focus-within{background:#fff;border-color:#ef8abb;box-shadow:0 0 0 3px rgba(239,79,155,.09)}
+.girls-search svg{width:19px;height:19px;fill:none;stroke:#df4b92;stroke-width:2;stroke-linecap:round}
+.girls-search input{width:100%;border:0;outline:0;background:transparent;color:#70485d;font:600 14px Arial,sans-serif}
+.girls-search input::placeholder{color:#b48a9f;font-weight:500}
+.girls-socials{display:flex;align-items:center;justify-content:flex-end;gap:9px}
+.girls-socials a{
+  width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
+  background:#fff1f7;border:1px solid #f3d4e3;transition:.18s;
+}
+.girls-socials a:hover{transform:translateY(-2px);background:#ef4f9b;border-color:#ef4f9b}
+.girls-socials svg{width:19px;height:19px;fill:#df438d}
+.girls-socials a:hover svg{fill:#fff}
+
+/* mantém o design original e apenas organiza os cards */
+.games{grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+.card{min-width:0}
+
+@media(max-width:760px){
+  .girls-topbar{
+    height:auto;padding:9px 12px 11px;
+    grid-template-columns:1fr auto;gap:8px 12px;
+  }
+  .girls-brand img{width:180px;height:43px}
+  .girls-socials{gap:6px}
+  .girls-socials a{width:35px;height:35px}
+  .girls-search{grid-column:1/-1;grid-row:2;height:41px}
+  .games{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+}
+@media(max-width:380px){
+  .girls-brand img{width:150px}
+  .girls-socials a{width:32px;height:32px}
+}
+
+
+/* Player compacto para itens do Internet Archive */
+.modal.archive-player .panel{
+  width:min(640px,94vw) !important;
+}
+.modal.archive-player .player-wrap{
+  width:min(560px,calc(94vw - 32px)) !important;
+  aspect-ratio:560/384 !important;
+  height:auto !important;
+  margin:0 auto !important;
+}
+.modal.archive-player .player-wrap iframe{
+  width:100% !important;
+  height:100% !important;
+}
+
+
+/* ===== 4 JOGOS POR FILEIRA ===== */
+.games{
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:14px !important;
+}
+.card{border-radius:20px !important}
+.info{padding:14px !important}
+.info h2{font-size:15px !important}
+.info p{font-size:12px !important}
+@media(max-width:900px){
+  .games{grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+}
+@media(max-width:680px){
+  .games{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:10px !important}
+  .info{padding:10px !important}
+  .info h2{font-size:13px !important}
+  .info p{font-size:11px !important}
+}
+
+
+/* ===== CORREÇÃO FINAL: 4 CARDS POR FILEIRA ===== */
+main .games,
+.games{
+  display:grid !important;
+  grid-template-columns:repeat(4, minmax(0, 1fr)) !important;
+  grid-auto-flow:row !important;
+  gap:14px !important;
+  width:100% !important;
+}
+main .games > .card,
+.games > .card{
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  margin:0 !important;
+  grid-column:auto !important;
+}
+@media (max-width:640px){
+  main .games,
+  .games{
+    grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+    gap:10px !important;
+  }
+}
+
+
+/* ===== MOBILE: 2 JOGOS POR FILEIRA ===== */
+@media (max-width:640px){
+  .games{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:10px !important;
+  }
+}
+
+/* ===== PLAYER: CABER INTEIRO ABAIXO DA BARRA ===== */
+.modal{
+  padding-top:92px !important;
+  padding-bottom:14px !important;
+  align-items:center !important;
+  overflow-y:auto !important;
+}
+.modal .panel{
+  width:min(960px,92vw) !important;
+  max-height:calc(100dvh - 108px) !important;
+  display:flex !important;
+  flex-direction:column !important;
+  overflow:hidden !important;
+}
+.modal .panel-head{
+  flex:0 0 auto !important;
+  min-height:52px !important;
+}
+.modal .player-wrap{
+  flex:1 1 auto !important;
+  width:100% !important;
+  height:auto !important;
+  max-height:calc(100dvh - 180px) !important;
+  aspect-ratio:16/9 !important;
+}
+.modal .player-wrap iframe{
+  width:100% !important;
+  height:100% !important;
+  display:block !important;
+}
+
+/* Archive mantém proporção própria, mas também cabe na tela */
+.modal.archive-player .panel{
+  width:min(640px,92vw) !important;
+}
+.modal.archive-player .player-wrap{
+  width:min(560px,100%) !important;
+  aspect-ratio:560/384 !important;
+  max-height:calc(100dvh - 180px) !important;
+}
+
+@media (max-width:640px){
+  .modal{
+    padding:132px 8px 10px !important;
+    align-items:flex-start !important;
+  }
+  .modal .panel{
+    width:96vw !important;
+    max-height:calc(100dvh - 142px) !important;
+    margin:0 auto !important;
+  }
+  .modal .panel-head{
+    min-height:44px !important;
+    padding:8px 10px !important;
+  }
+  .modal .panel-head h3,
+  .modal .panel-head .title{
+    font-size:13px !important;
+    line-height:1.2 !important;
+  }
+  .modal .player-wrap{
+    max-height:calc(100dvh - 200px) !important;
+  }
+}
+
+
+/* ===== CARDS PREENCHENDO A LARGURA DO SITE ===== */
+.wrap{
+  width:min(1480px,96%) !important;
+  max-width:none !important;
+}
+.games{
+  width:100% !important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:16px !important;
+}
+.games > .card{
+  width:100% !important;
+  max-width:none !important;
+}
+.games .cover{
+  width:100% !important;
+  aspect-ratio:16/9 !important;
+  background-size:cover !important;
+  background-position:center !important;
+}
+@media(max-width:640px){
+  .wrap{width:96% !important}
+  .games{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:10px !important;
+  }
+}
+
+</style>
+<link rel="icon" type="image/png" href="assets/imagem-02.webp">
+</head>
+<body>
+
+<nav class="girls-topbar">
+  <a class="girls-brand" href="https://barbieflix.vercel.app" aria-label="Cinema da Barbie">
+    <img loading="lazy" decoding="async" src="assets/imagem-03.webp" alt="Cinema da Barbie">
+  </a>
+
+  <div class="girls-search">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.1-5.4a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z"/></svg>
+    <input id="gameSearch" type="search" placeholder="Pesquisar jogos..." autocomplete="off" aria-label="Pesquisar jogos">
+  </div>
+
+  <div class="girls-socials">
+    <a href="https://t.me/+f6oQa4lSD4U2ZGU5" target="_blank" rel="noopener" aria-label="Telegram" title="Telegram">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 3.1 18.5 20c-.2 1.2-.9 1.5-1.9.9l-4.7-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-8c.4-.3-.1-.5-.6-.2L6.2 14 1.5 12.5c-1-.3-1-1 .2-1.5L20 4c.9-.3 1.8.2 1.6-.9Z"/></svg>
+    </a>
+    <a href="https://chat.whatsapp.com/KbXl2Ljvhdb4NPAMPjZdh0?s=sh&amp;p=a&amp;mlu=4&amp;ilr=4" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.5 4.1 1.6 5.9L.2 24l6.5-1.7a11.8 11.8 0 0 0 5.4 1.4h.1c6.5 0 11.8-5.3 11.8-11.8 0-3.2-1.2-6.1-3.5-8.4Zm-8.3 18.2h-.1c-1.7 0-3.5-.5-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.8 9.8 0 1 1 8.5 4.7Zm5.4-7.3c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.2-.2.3-.8.9-1 1.1-.2.2-.4.2-.7.1-1.8-.9-3-1.6-4.2-3.7-.3-.6.3-.5.9-1.7.1-.2.1-.4 0-.6l-.9-2c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.9s1.2 3.3 1.4 3.5c.2.2 2.4 3.7 5.9 5.2.8.4 1.5.6 2 .7.8.3 1.6.2 2.2.1.7-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3Z"/></svg>
+    </a>
+    <a href="https://instagram.com/ocinemadasgirls" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Zm10.5 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg>
+    </a>
+  </div>
+</nav>
+
+<main class="wrap">
+  
+
+  <section class="games">
+    <article class="card">
+      <div class="cover krissy"><span>CLÁSSICO</span></div>
+      <div class="info">
+        <h2>Let's Baby-sit Baby Krissy</h2>
+        <p>Cuide da Bebê Krissy e complete as atividades de babá.</p>
+        <button class="play" onclick="openGame('Let\'s Baby-sit Baby Krissy','https://www.play-games.com/iframe/33200.html')">JOGAR ♡</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-04.webp')"></div>
+      <div class="info">
+        <h2>Snip'n Style Salon</h2>
+        <p>Cuide do cabelo da Barbie e reproduza os penteados.</p>
+        <button class="play" onclick="openGame(`Snip'n Style Salon`,'https://www.play-games.com/iframe/33428.html')">JOGAR ♡</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-05.webp')"></div>
+      <div class="info">
+        <h2>My Scene: Dazzling Nails</h2>
+        <p>Escolha esmaltes, adesivos, joias e crie suas unhas.</p>
+        <button class="play" onclick="openGame('My Scene: Dazzling Nails','https://www.play-games.com/iframe/33418.html')">JOGAR ♡</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-06.webp')"></div>
+      <div class="info">
+        <h2>Barbie's Game Room</h2>
+        <p>Entre na sala de jogos da Barbie e descubra vários minijogos.</p>
+        <button class="play" onclick="openGame(`Barbie's Game Room`,'https://www.play-games.com/iframe/36657.html')">JOGAR ♡</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-07.webp')"></div>
+      <div class="info">
+        <h2>Barbie and the Diamond Castle</h2>
+        <p>Encontre as diferenças nas cenas de Barbie e o Castelo de Diamante.</p>
+        <button class="play" onclick="openGame(`Barbie and the Diamond Castle`,`https://www.play-games.com/iframe/3586.html`)">JOGAR ♡</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-08.webp')"></div>
+      <div class="info">
+        <h2>Barbie as the Princess and the Pauper: Storybook Adventures</h2>
+        <p>Complete a história de A Princesa e a Plebeia colocando os adesivos no lugar certo.</p>
+        <button class="play" onclick="openGame(`Barbie as the Princess and the Pauper: Storybook Adventures`,`https://www.play-games.com/emb/39304`)">JOGAR ♡</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-09.webp')"></div>
+      <div class="info">
+        <h2>Star Surfer Barbie</h2>
+        <p>Pegue uma onda com a Barbie, faça manobras e colete estrelas.</p>
+        <button class="play" onclick="openGame(`Star Surfer Barbie`,`https://www.play-games.com/iframe/10523.html`)">JOGAR ♡</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-10.webp')"></div>
+      <div class="info">
+        <h2>Barbie: Makeover Studio</h2>
+        <p>Escolha penteados, cores e maquiagem no estúdio de beleza da Barbie.</p>
+        <button class="play" onclick="openGame(`Barbie: Makeover Studio`,`https://www.play-games.com/iframe/36626.html`)">JOGAR ♡</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-11.webp')"></div>
+      <div class="info">
+        <h2>Barbie: Princess Dress-Up</h2>
+        <p>Vista a Barbie como suas princesas favoritas e combine diferentes looks.</p>
+        <button class="play" onclick="openGame(`Barbie: Princess Dress-Up`,`https://archive.org/embed/barbie_princess-dress-up`,`archive`)">JOGAR ♡</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-12.webp')"></div>
+      <div class="info">
+        <h2>Barbie Fairytopia: Mermaidia</h2>
+        <p>Entre no mundo de Mermaidia e crie cenas no universo de Fairytopia.</p>
+        <button class="play" onclick="openGame(`Barbie Fairytopia: Mermaidia`,`https://archive.org/embed/fairytopia_mermadia`,`archive`)">JOGAR ♡</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-13.webp')"></div>
+      <div class="info">
+        <h2>Fluffy Starz Dress Up</h2>
+        <p>Escolha acessórios, estampas e cores para deixar a gatinha do seu jeitinho.</p>
+        <button class="play" onclick="openGame(`Fluffy Starz Dress Up`,`https://archive.org/embed/fluffy-starz-dress-up`,`archive`)">JOGAR ♡</button>
+      </div>
+    </article>
+
+<article class="card">
+<div class="cover game-cover" style="background-image:url('assets/imagem-14.webp')"></div>
+<div class="info"><h2>Barbie Fairy Race</h2><p>Voe com a Barbie fada, desvie dos obstáculos e encontre os itens mágicos.</p>
+<button class="play" onclick="openGame(`Barbie Fairy Race`,`https://www.play-games.com/iframe/39342.html`)">JOGAR ♡</button></div>
+</article>
+<article class="card">
+<div class="cover game-cover" style="background-image:url('assets/imagem-15.webp')"></div>
+<div class="info"><h2>Barbie A Mermaid Tale 2</h2><p>Crie o visual de sereia da Barbie com cabelos, acessórios e caudas.</p>
+<button class="play" onclick="openGame(`Barbie A Mermaid Tale 2`,`https://www.play-games.com/iframe/1461.html`)">JOGAR ♡</button></div>
+</article>
+<article class="card">
+<div class="cover game-cover" style="background-image:url('assets/imagem-16.webp')"></div>
+<div class="info"><h2>Barbie: Presto Pizza</h2><p>Entre na pizzaria da Barbie e prepare os pedidos dos clientes.</p>
+<button class="play" onclick="openGame(`Barbie: Presto Pizza`,`https://www.play-games.com/iframe/10511.html`)">JOGAR ♡</button></div>
+</article>
+<article class="card">
+<div class="cover game-cover" style="background-image:url('assets/imagem-17.webp')"></div>
+<div class="info"><h2>Barbie Mariposa Dress Up</h2><p>Monte o visual da Barbie Mariposa escolhendo cabelo, roupas, sapatos e asas.</p>
+<button class="play" onclick="openGame(`Barbie Mariposa Dress Up`,`https://www.play-games.com/iframe/39344.html`)">JOGAR ♡</button></div>
+</article>
+  
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-18.webp')"></div>
+      <div class="info">
+        <h2>Kelly Club: Party Dress</h2>
+        <p>Crie e decore o vestido de festa da Kelly.</p>
+        <button class="play" onclick="openGame(`Kelly Club: Party Dress`,`https://www.play-games.com/iframe/39277.html`)">JOGAR ♡</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-19.webp')"></div>
+      <div class="info">
+        <h2>Barbie Odette Dress Up</h2>
+        <p>Monte um visual encantado para Odette.</p>
+        <button class="play" onclick="openGame(`Barbie Odette Dress Up`,`https://www.play-games.com/iframe/36307.html`)">JOGAR ♡</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-20.webp')"></div>
+      <div class="info">
+        <h2>You Can Be Anything: Barbie Photo Booth</h2>
+        <p>Monte cenários e fotos criativas com a Barbie.</p>
+        <button class="play" onclick="openGame(`You Can Be Anything: Barbie Photo Booth`,`https://www.play-games.com/iframe/25688.html`)">JOGAR ♡</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-21.webp')"></div>
+      <div class="info">
+        <h2>Barbie Princess Charm School</h2>
+        <p>Explore o universo da Escola de Princesas.</p>
+        <button class="play" onclick="openGame(`Barbie Princess Charm School`,`https://www.play-games.com/iframe/9637.html`)">JOGAR ♡</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-22.webp')"></div>
+      <div class="info">
+        <h2>Barbie Zoom and Groom</h2>
+        <p>Escolha um bichinho para cuidar, arrumar e vestir.</p>
+        <button class="play" onclick="openGame(`Barbie Zoom and Groom`,`https://archive.org/embed/zoom-and-groom`)">JOGAR ♡</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-23.webp')"></div>
+      <div class="info">
+        <h2>Barbie Art Teacher</h2>
+        <p>Pinte e personalize desenhos com a Barbie.</p>
+        <button class="play" onclick="openGame(`Barbie Art Teacher`,`https://www.play-games.com/iframe/10506.html`)">JOGAR ♡</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-24.webp')"></div>
+      <div class="info">
+        <h2>You Can Be a Chef Barbie</h2>
+        <p>Prepare receitas e ajude a Barbie a se tornar uma chef.</p>
+        <button class="play" onclick="openGame(`You Can Be a Chef Barbie`,`https://www.play-games.com/iframe/25701.html`)">JOGAR ♡</button>
+      </div>
+    </article>
+
+
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-25.webp')"></div>
+      <div class="info">
+        <h2>Your Barbie Dream Fairy</h2>
+        <p>Transforme a Barbie em uma fada e escolha asas, cabelo, roupas e acessórios.</p>
+        <button class="play" onclick="openGame(`Your Barbie Dream Fairy`,`https://www.play-games.com/iframe/28150.html`)">JOGAR ♡</button>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover game-cover" style="background-image:url('assets/imagem-26.webp')"></div>
+      <div class="info">
+        <h2>Barbie in the Great Scooby-Doo Search</h2>
+        <p>Ajude a Barbie e o Scooby-Doo nesta aventura de busca.</p>
+        <button class="play" onclick="openGame(`Barbie in the Great Scooby-Doo Search`,`https://flashmuseum.net/game/barbie-in-the-great-scooby-doo-search-xq3/`)">JOGAR ♡</button>
+      </div>
+    </article>
+</section>
+
+  <footer>Feito para matar a saudade dos joguinhos que marcaram a infância ♡</footer>
+</main>
+
+<div class="modal" id="gameModal" role="dialog" aria-modal="true">
+  <div class="panel">
+    <div class="panel-top">
+      <div class="panel-title">Cuide da Bebê Krissy</div>
+      <button class="icon-btn" onclick="fullscreenGame()" title="Tela cheia">⛶</button>
+      <button class="icon-btn" onclick="closeGame()" title="Fechar">×</button>
+    </div>
+    <div class="player-area">
+      <div class="player-wrap" id="playerWrap">
+        <iframe id="gameFrame"
+          allow="autoplay; fullscreen"
+          allowfullscreen
+          webkitallowfullscreen="true"
+          mozallowfullscreen="true"
+          scrolling="no"></iframe>
+      </div>
+      <div class="mobile-game-help">
+        <span>Para jogar melhor no celular, vire a tela para o modo horizontal.</span>
+        <button type="button" id="externalGameBtn">ABRIR JOGO DIRETAMENTE ↗</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const modal = document.getElementById('gameModal');
+const frame = document.getElementById('gameFrame');
+
+let currentGameUrl = '';
+
+function openGame(title,url,provider){
+  currentGameUrl=url;
+  document.querySelector('.panel-title').textContent=title;
+
+  const frame=document.getElementById('gameFrame');
+  const panel=document.querySelector('.panel');
+  const isArchive = provider === 'archive' || url.includes('archive.org/embed/');
+
+  panel.classList.toggle('archive-player', isArchive);
+  frame.src='about:blank';
+
+  setTimeout(()=>{ modal.classList.toggle('archive-player', /archive\.org\/embed\//i.test(url)); frame.src=url; },30);
+
+  modal.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+document.getElementById('externalGameBtn').addEventListener('click',()=>{
+  if(currentGameUrl) window.open(currentGameUrl,'_blank','noopener');
+});
+function closeGame(){
+  modal.classList.remove('open');
+  frame.src='about:blank';
+  currentGameUrl='';
+  document.querySelector('.panel').classList.remove('archive-player');
+  document.body.style.overflow='';
+}
+function fullscreenGame(){
+  const box=document.getElementById('playerWrap');
+  if(box.requestFullscreen) box.requestFullscreen();
+  else if(box.webkitRequestFullscreen) box.webkitRequestFullscreen();
+}
+modal.addEventListener('click',e=>{if(e.target===modal)closeGame()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGame()});
+</script>
+
+<script>
+(function(){
+  const input=document.getElementById('gameSearch');
+  if(!input) return;
+  const cards=[...document.querySelectorAll('.games .card')];
+  const normalize=s=>(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+  input.addEventListener('input',function(){
+    const q=normalize(this.value);
+    cards.forEach(card=>{
+      const title=normalize(card.innerText);
+      card.style.display=(!q || title.includes(q)) ? '' : 'none';
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
